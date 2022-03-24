@@ -5,11 +5,16 @@ header {
     left: 0;
 
     height: 67px;
+    background-color: #C3CFD9;
+}
+
+header p {
+    font-size: 34px;
+    color: #E8833A;
+
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    font-size: 34px;
-    color: #E8833A;
-    background-color: #C3CFD9;
 }

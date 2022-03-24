@@ -15,20 +15,18 @@ export default function Movies() {
         promise.catch(error => {console.log(error.response)})
     }, [])
 
-    console.log(movies)
-
     return movies.length > 0 ? (
         <main className='Movies'>
             <p>Select a movie</p>
             <section>
-                {movies.map(({id, posterURL, id:movieId}) => { return (
-                    <Link to={`/movie/${movieId}`}  key={id}>
+                {movies.map(({id, posterURL}) => { return (
+                    <Link to={`/movie/${id}`}  key={id}>
                         <article>
-                            <img src={posterURL} alt={movieId} />
+                            <img src={posterURL} alt={id} />
                         </article>
                     </Link>
                 )})}
             </section>
         </main>
-    ) : (<p>Loading...</p>)
+    ) : (<p>JEQUITI...</p>)
 } 

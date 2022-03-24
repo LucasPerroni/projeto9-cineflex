@@ -35,7 +35,7 @@ function SectionTimes({day}) {
             <p>{weekday} - {date}</p>
             <div>
                 {showtimes.map( ({name, id}) => { return (
-                    <Link  key={id} to={`/section/${id}`}>
+                    <Link  key={id} to={`/session/${id}`}>
                         <button>{name}</button>
                     </Link>
                 )})}

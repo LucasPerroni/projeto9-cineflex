@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import './style.css'
 
-export default function Footer({id}) {
+export default function Footer({id, day, time}) {
     const [movie, setMovie] = useState({})
 
     useEffect(() => {
@@ -19,7 +19,10 @@ export default function Footer({id}) {
             <div className='image'>
                 <img src={movie.posterURL} alt='Movie' />
             </div>
-            <p>{movie.title}</p>
+            <div className='title'>
+                <p>{movie.title}</p>
+                {day ? <p>{day} - {time}</p> : <></>}
+            </div>
         </footer>
     ) : (
         <footer className='Footer'>

@@ -38,6 +38,16 @@
     cursor: pointer;
 }
 
+.Seats article button.selected {
+    background-color: #8DD7CF;
+    border: 1px solid #1AAE9E;
+}
+
+.Seats article button.unavailable {
+    background-color: #FBE192;
+    border: 1px solid #F7C52B;
+}
+
 /* STATUS TYPE */
 
 .Seats .status {

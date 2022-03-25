@@ -8,6 +8,7 @@ import './style.css'
 export default function Seats() {
     const {sessionId} = useParams()
     const [session, setSession] = useState({})
+    const [selected, setSelected] = useState([])
 
     useEffect(() => {
         const promise = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${sessionId}/seats`)
@@ -20,7 +21,7 @@ export default function Seats() {
             <main className='Seats'>
                 <h1>Select your seat(s)</h1>
                 <article>
-                    <DisplaySeats seats={session.seats} />
+                    <DisplaySeats seats={session.seats} selected={selected} setSelected={setSelected}/>
                 </article>
                 <StatusType />
                 <section>
@@ -38,12 +39,28 @@ export default function Seats() {
     ) : (<p>Loading...</p>)
 } 
 
-function DisplaySeats({seats}) {
+function DisplaySeats({seats, selected, setSelected}) {
+
+    function validation(id) {
+        if (!selected.includes(id)) {
+            return setSelected([...selected, id].sort( (a, b) => {return a - b} ))
+        } else {
+            const index = selected.indexOf(id)
+            selected.splice(index, 1)
+            return setSelected([...selected].sort( (a, b) => {return a - b} ))
+        }
+    }
+
     return (
         <>
-            {seats.map(seat => { return (
-                <button key={seat.id}>{seat.name}</button>
-            )})}
+            {seats.map( ({id, name, isAvailable}) => {
+                if (isAvailable) {
+                    return <button key={id} className={selected.includes(id) ? 'selected' : ''} 
+                    onClick={() => validation(id)}>{name}</button>
+                } else {
+                    return <button key={id} className='unavailable' style={{'cursor': 'auto'}}>{name}</button>
+                }
+            })}
         </>
     )
 }

@@ -1,0 +1,55 @@
+.Success h1 {
+    width: 100%;
+    height: 110px;
+    margin: 0px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 24px;
+    font-weight: 700;
+    color: #247A6B;
+}
+
+.Success h1.fail {
+    color: #dd4226;
+}
+
+.Success article {
+    max-width: 90%;
+    margin: 0 auto 40px;
+}
+
+.Success article h2 {
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.Success article p {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.Success div {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+}
+
+.Success button {
+    width: 225px;
+    height: 42px;
+    margin-top: 30px;
+
+    border: none;
+    border-radius: 3px;
+    background: #E8833A;
+    box-shadow: 1px 2px 8px 2px rgba(0, 0, 0, 0.1);
+
+    font-size: 18px;
+    color: #FFFFFF;
+    cursor: pointer;
+}

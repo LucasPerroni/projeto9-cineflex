@@ -142,4 +142,9 @@
     font-size: 18px;
     color: #FFFFFF;
     cursor: pointer;
+    transition: all 0.3s;
+}
+
+.Seats .reserve button.disabled {
+    background: #e8833a52;
 }

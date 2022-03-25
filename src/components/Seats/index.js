@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import {useParams} from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 
 import Footer from '../Footer/'
@@ -7,14 +7,32 @@ import './style.css'
 
 export default function Seats() {
     const {sessionId} = useParams()
-    const [session, setSession] = useState({})
-    const [user, setUser] = useState({name: '', cpf: '', ids: []})
+    const [session, setSession] = useState({}) // movie session
+    const [user, setUser] = useState({name: '', cpf: '', ids: []}) // user data
+    const [valid, setValid] = useState(false) // user data is valid or not
 
+    // GET SESSION API
     useEffect(() => {
         const promise = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${sessionId}/seats`)
         promise.then(response => {setSession(response.data)})
         promise.catch(error => {console.log(error.response)})
     }, [sessionId])
+
+    // VALIDATE IF "USER" OBJ IS VALID
+    function validateUser() {
+        const {name, cpf, ids} = user
+        let counter = 0
+
+        let array = name.split('')
+        array.forEach(letter => {
+            if (letter !== ' ' && Number(letter)) {counter++}
+        })
+        
+        if (counter === 0 && name.length > 1 && cpf.length === 11 && Number(cpf) && ids.length > 0) {
+            setValid(true)
+        } else {setValid(false)}
+    }
+    useEffect(validateUser, [user])
 
     return session.id ?  (
         <>
@@ -36,7 +54,9 @@ export default function Seats() {
                     
                 </section>
                 <div className='reserve'>
-                    <button onClick={() => console.log(user)}>Reserve seat(s)</button>
+                    <Link to='/success' state={{user: user, session: session}}>
+                        <button className={valid ? '' : 'disabled'} disabled={valid ? false : true}>Reserve seat(s)</button>
+                    </Link>
                 </div>
             </main>
             <Footer id={session.movie.id} day={session.day.weekday} time={session.name} />

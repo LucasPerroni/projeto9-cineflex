@@ -11,10 +11,21 @@ header {
 header p {
     font-size: 34px;
     color: #E8833A;
+    cursor: pointer;
 
     height: 100%;
-    width: 100%;
+    width: 120px;
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
     align-items: center;
+}
+
+header ion-icon {
+    position: absolute;
+    top: calc((67px - 34px) / 2);
+    left: 20px;
+
+    font-size: 34px;
+    color: #E8833A;
+    cursor: pointer;
 }

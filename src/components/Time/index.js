@@ -25,7 +25,7 @@ export default function Time() {
             </main>
             <Footer id={movieId} />
         </>
-    ) : (<p>Loading...</p>)
+    ) : (<p>JEQUITI...</p>)
 } 
 
 function SectionTimes({day}) {

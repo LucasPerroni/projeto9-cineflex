@@ -28,5 +28,5 @@ export default function Movies() {
                 )})}
             </section>
         </main>
-    ) : (<p>JEQUITI...</p>)
+    ) : (<p>Loading...</p>)
 } 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 import Footer from '../Footer/'
@@ -7,6 +7,7 @@ import './style.css'
 
 export default function Seats() {
     const {sessionId} = useParams()
+    const navigate = useNavigate()
     const [session, setSession] = useState({}) // movie session
     const [user, setUser] = useState({name: '', cpf: '', ids: []}) // user data
     const [valid, setValid] = useState(false) // user data is valid or not
@@ -34,6 +35,15 @@ export default function Seats() {
     }
     useEffect(validateUser, [user])
 
+    // SEND "USER" TO API
+    function sendToAPI(e) {
+        e.preventDefault()
+
+        const promise = axios.post('https://mock-api.driven.com.br/api/v5/cineflex/seats/book-many', user)
+        promise.then(() => navigate('/success', {state: {user: user, session: session, success: true}}))
+        promise.catch(() => navigate('/success', {state: {user: user, session: session, success: false}}))
+    }
+
     return session.id ?  (
         <>
             <main className='Seats'>
@@ -42,22 +52,23 @@ export default function Seats() {
                     <DisplaySeats seats={session.seats} user={user} setUser={setUser}/>
                 </article>
                 <StatusType />
-                <section>
+                <form onSubmit={sendToAPI}>
+                    <section>
 
-                    <p>Name:</p>
-                    <input placeholder='Write your name...' 
-                    onChange={e => setUser({...user, name: `${e.target.value}`})}></input>
+                        <p>Name:</p>
+                        <input type='text' placeholder='Write your name...' value={user.name}
+                        onChange={e => setUser({...user, name: `${e.target.value}`})}></input>
 
-                    <p>CPF:</p>
-                    <input type='number' placeholder='Write your CPF...'
-                    onChange={e => setUser({...user, cpf: `${e.target.value}`})}></input>
-                    
-                </section>
-                <div className='reserve'>
-                    <Link to='/success' state={{user: user, session: session}}>
-                        <button className={valid ? '' : 'disabled'} disabled={valid ? false : true}>Reserve seat(s)</button>
-                    </Link>
-                </div>
+                        <p>CPF:</p>
+                        <input type='number' placeholder='Write your CPF...' value={user.cpf}
+                        onChange={e => setUser({...user, cpf: `${e.target.value}`})}></input>
+                        
+                    </section>
+                    <div className='reserve'>
+                        <button type='submit' className={valid ? '' : 'disabled'}
+                        disabled={valid ? false : true}>Reserve seat(s)</button>
+                    </div>
+                </form>
             </main>
             <Footer id={session.movie.id} day={session.day.weekday} time={session.name} />
         </>

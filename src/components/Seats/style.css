@@ -101,6 +101,12 @@
     flex-direction: column;
 }
 
+.Seats section h2 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
 .Seats section p {
     font-size: 18px;
 }

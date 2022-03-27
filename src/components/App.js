@@ -1,5 +1,6 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
+import ScrollToTop from './ScrollToTop'
 import Header from './Header/'
 import Movies from './Movies/'
 import Time from './Time/'
@@ -9,6 +10,7 @@ import Success from './Success/'
 export default function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Header />
             <Routes>
                 <Route path='/' element={<Movies />} />

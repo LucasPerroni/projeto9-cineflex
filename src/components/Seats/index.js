@@ -9,7 +9,7 @@ export default function Seats() {
     const {sessionId} = useParams()
     const navigate = useNavigate()
     const [session, setSession] = useState({}) // movie session
-    const [user, setUser] = useState({name: '', cpf: '', ids: []}) // user data
+    const [user, setUser] = useState({ids: [], compradores: []}) // user data
     const [valid, setValid] = useState(false) // user data is valid or not
 
     // GET SESSION API
@@ -21,17 +21,27 @@ export default function Seats() {
 
     // VALIDATE IF "USER" OBJ IS VALID
     function validateUser() {
-        const {name, cpf, ids} = user
-        let counter = 0
+        const {compradores:purchasers} = user
 
-        let array = name.split('')
-        array.forEach(letter => {
-            if (letter !== ' ' && Number(letter)) {counter++}
-        })
+        let counter = 0
+        if (purchasers.length === 0) {counter++}
+        for (let i = 0; i < purchasers.length; i++) {
+            const {nome, cpf} = purchasers[i]
+
+            // Validate if 'name' string has any numbers
+            let numbers = 0
+            let array = nome.split('')
+            array.forEach(letter => {
+                if (letter !== ' ' && Number(letter)) {numbers++}
+            })
+
+            if (nome.length < 2 || cpf.length !== 11 || !Number(cpf) || numbers !== 0) {
+                counter++
+            }
+        }
         
-        if (counter === 0 && name.length > 1 && cpf.length === 11 && Number(cpf) && ids.length > 0) {
-            setValid(true)
-        } else {setValid(false)}
+        if (counter === 0) {setValid(true)}
+        else {setValid(false)}
     }
     useEffect(validateUser, [user])
 
@@ -53,17 +63,9 @@ export default function Seats() {
                 </article>
                 <StatusType />
                 <form onSubmit={sendToAPI}>
-                    <section>
-
-                        <p>Name:</p>
-                        <input type='text' placeholder='Write your name...' value={user.name}
-                        onChange={e => setUser({...user, name: `${e.target.value}`})}></input>
-
-                        <p>CPF:</p>
-                        <input type='number' placeholder='Write your CPF...' value={user.cpf}
-                        onChange={e => setUser({...user, cpf: `${e.target.value}`})}></input>
-                        
-                    </section>
+                    {user.ids.map(id =>
+                        <DisplayForm  key={id} user={user} setUser={setUser} seats={session.seats} id={id} />
+                    )}
                     <div className='reserve'>
                         <button type='submit' className={valid ? '' : 'disabled'}
                         disabled={valid ? false : true}>Reserve seat(s)</button>
@@ -75,16 +77,39 @@ export default function Seats() {
     ) : (<p>Loading...</p>)
 } 
 
+
 function DisplaySeats({seats, user, setUser}) {
     const {ids} = user
 
     function validation(id) {
+        // GET SEAT NUMBER AND PURCHASER USING ID
+        function getNumber() {
+            for (let i = 0; i < seats.length; i++) {
+                if (seats[i].id === id) {return seats[i].name}
+            }
+        }
+        function getPurchaser() {
+            for (let i = 0; i < user.compradores.length; i++) {
+                if (user.compradores[i].id === id) {return user.compradores[i]}
+            }
+        }
+
         if (!ids.includes(id)) {
-            return setUser({...user, ids: [...ids, id].sort( (a, b) => {return a - b} )})
+            setUser({ids: [...user.ids, id].sort( (a, b) => {return a - b} ), 
+            compradores: [...user.compradores, {id: id, nome: '', cpf: ''}].sort( (a, b) => {return a.id - b.id} )})
         } else {
-            const index = ids.indexOf(id)
-            ids.splice(index, 1)
-            return setUser({...user, ids: [...ids].sort( (a, b) => {return a - b} )})
+            let confirmation = true
+            const purchaser = getPurchaser()
+            if (purchaser.nome.length > 0 || purchaser.cpf.length > 0) {
+                confirmation = window.confirm(`Do you want to delete the seat ${getNumber()}?`)
+            }
+            if (confirmation) {
+                const index = ids.indexOf(id)
+                user.ids.splice(index, 1)
+                user.compradores.splice(index, 1)
+                setUser({ids: [...user.ids].sort( (a, b) => {return a - b} ), 
+                compradores: [...user.compradores]})
+            }
         }
     }
 
@@ -99,6 +124,47 @@ function DisplaySeats({seats, user, setUser}) {
                 }
             })}
         </>
+    )
+}
+
+function DisplayForm({user, setUser, seats, id}) {
+    // GET SEAT NUMBER USING THE ID
+    function getNumber(id) {
+        for (let i = 0; i < seats.length; i++) {
+            if (seats[i].id === id) {return seats[i].name}
+        }
+    }
+
+    // GET RIGHT PURCHASER USING THE ID
+    function getPurchaser() {
+        for (let i = 0; i < user.compradores.length; i++) {
+            if (user.compradores[i].id === id) {return user.compradores[i]}
+        }
+    }
+    const purchaser = getPurchaser()
+
+    // RERENDER MAIN FUNCTION AND ATT PURCHASER OBJ
+    function SetUser(e) {
+        if (e.target.type === 'text') {
+            purchaser.nome = e.target.value
+        } else {
+            purchaser.cpf = e.target.value
+        }
+        setUser({...user})
+    }
+
+    return (
+        <section> 
+            <h2>Seat {getNumber(id)}</h2>
+
+            <p>Name:</p>
+            <input type='text' placeholder='Write your name...'
+            onChange={e => SetUser(e)}></input>
+
+            <p>CPF:</p>
+            <input type='number' placeholder='Write your CPF...'
+            onChange={e => SetUser(e)}></input>
+        </section>
     )
 }
 
